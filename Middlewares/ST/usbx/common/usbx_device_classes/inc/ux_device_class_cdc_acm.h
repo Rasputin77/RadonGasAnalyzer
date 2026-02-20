@@ -394,7 +394,7 @@ UINT  _uxe_device_class_cdc_acm_write_run(UX_SLAVE_CLASS_CDC_ACM *cdc_acm, UCHAR
                                 ULONG requested_length, ULONG *actual_length);
 UINT  _uxe_device_class_cdc_acm_read_run(UX_SLAVE_CLASS_CDC_ACM *cdc_acm, UCHAR *buffer,
                                 ULONG requested_length, ULONG *actual_length);
-
+extern UX_SLAVE_CLASS_CDC_ACM *get_cdc_acm(void);
 /* Define Device CDC Class API prototypes.  */
 #define ux_device_class_cdc_acm_entry               _ux_device_class_cdc_acm_entry
 

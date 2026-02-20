@@ -23,12 +23,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
-#include "ux_api.h"
-#include "ux_device_class_cdc_acm.h"
-
-
-
+#include "ux_api.h"                     // Core USBX
+#include "ux_device_stack.h"            // Device stack
+#include "ux_device_class_cdc_acm.h"   // CDC-ACM
+#include "ux_device_cdc_acm.h"   // CDC-ACM
+#include "stm32u5xx_hal.h"
+#include "main.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -38,8 +38,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CDC_THREAD_STACK_SIZE 2048
-#define CDC_THREAD_PRIORITY 0
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -48,16 +47,16 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TX_THREAD tx_app_thread;
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+
 /* USER CODE BEGIN PV */
-TX_THREAD cdc_thread;
-UCHAR cdc_thread_stack[CDC_THREAD_STACK_SIZE];
-extern UX_SLAVE_CLASS_CDC_ACM *cdc_acm;
-//UX_DEVICE_CLASS_CDC_ACM *cdc_acm;  // dichiarato nel file app_usbx_device.c
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-void cdc_thread_entry(ULONG arg);
+
 /* USER CODE END PFP */
 
 /**
@@ -68,42 +67,72 @@ void cdc_thread_entry(ULONG arg);
 UINT App_ThreadX_Init(VOID *memory_ptr)
 {
   UINT ret = TX_SUCCESS;
+  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
+
   /* USER CODE BEGIN App_ThreadX_MEM_POOL */
 
   /* USER CODE END App_ThreadX_MEM_POOL */
+  CHAR *pointer;
+
+  /* Allocate the stack for tx app thread  */
+  if (tx_byte_allocate(byte_pool, (VOID**) &pointer,
+                       TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+  {
+    return TX_POOL_ERROR;
+  }
+  /* Create tx app thread.  */
+  if (tx_thread_create(&tx_app_thread, "tx app thread", tx_app_thread_entry, 0, pointer,
+                       TX_APP_STACK_SIZE, TX_APP_THREAD_PRIO, TX_APP_THREAD_PREEMPTION_THRESHOLD,
+                       TX_APP_THREAD_TIME_SLICE, TX_APP_THREAD_AUTO_START) != TX_SUCCESS)
+  {
+    return TX_THREAD_ERROR;
+  }
+
   /* USER CODE BEGIN App_ThreadX_Init */
-
-  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
-
-      /* 1. Alloco lo stack del thread */
-      ret = tx_byte_allocate(byte_pool,
-                             (VOID **)&cdc_thread_stack,
-                             CDC_THREAD_STACK_SIZE,
-                             TX_NO_WAIT);
-
-  if (ret != TX_SUCCESS)
-	  return ret;
-
-  /* 2. Creo il thread */
-  ret = tx_thread_create(&cdc_thread,
-						 "CDC Thread",
-						 cdc_thread_entry,  // �? La tua funzione!
-						 0,                 // arg
-						 cdc_thread_stack,
-						 CDC_THREAD_STACK_SIZE,
-						 CDC_THREAD_PRIORITY,
-						 CDC_THREAD_PRIORITY,
-						 TX_NO_TIME_SLICE,
-						 TX_AUTO_START);     // Parte subito
-
-  if (ret != TX_SUCCESS)
-	  return ret;
-
-  return TX_SUCCESS;
 
   /* USER CODE END App_ThreadX_Init */
 
   return ret;
+}
+/**
+  * @brief  Function implementing the tx_app_thread_entry thread.
+  * @param  thread_input: Hardcoded to 0.
+  * @retval None
+  */
+void tx_app_thread_entry(ULONG thread_input)
+{
+  /* USER CODE BEGIN tx_app_thread_entry */
+	UCHAR msg[] = "Hallo!!\r\n";
+	ULONG actual_length=0;
+	unsigned int ret;
+	//int debug=0;
+	HAL_PCD_Start(&hpcd_USB_OTG_FS);
+	UX_SLAVE_CLASS_CDC_ACM * cdc_acm_val=NULL;
+	//HAL_Delay(4000);
+
+	while(1)
+	{
+		cdc_acm_val=get_cdc_acm();
+
+		if(cdc_acm_val==NULL)
+		{
+
+		}
+		else
+		{
+
+			if (cdc_acm_val->ux_slave_class_cdc_acm_data_dtr_state == 1)
+			{
+				ret=ux_device_class_cdc_acm_write(cdc_acm_val, msg, sizeof(msg) - 1, &actual_length);
+				tx_thread_sleep(100 );
+			}
+
+		}
+
+		//debug++;
+	}
+
+  /* USER CODE END tx_app_thread_entry */
 }
 
   /**
@@ -125,24 +154,5 @@ void MX_ThreadX_Init(void)
 }
 
 /* USER CODE BEGIN 1 */
-
-void cdc_thread_entry(ULONG arg)
-{
-    while (1)
-    {
-        if (cdc_acm != UX_NULL)
-        {
-            UCHAR msg[] = "Ciao da U585 USBX + ThreadX!\r\n";
-            ULONG sent;
-
-            ux_device_class_cdc_acm_write(cdc_acm,
-                                          msg,
-                                          sizeof(msg)-1,
-                                          &sent);
-        }
-
-        tx_thread_sleep(100); // ogni 100 ms
-    }
-}
 
 /* USER CODE END 1 */

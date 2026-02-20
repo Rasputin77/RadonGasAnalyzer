@@ -94,12 +94,21 @@
 /*                                            resulting in version 6.3.0  */
 /*                                                                        */
 /**************************************************************************/
+
+UX_SLAVE_CLASS_CDC_ACM                  *my_cdc_acm=NULL;
+UX_SLAVE_CLASS_CDC_ACM *get_cdc_acm(void)
+{
+	return my_cdc_acm;
+}
+
 UINT  _ux_device_class_cdc_acm_initialize(UX_SLAVE_CLASS_COMMAND *command)
 {
                                           
-UX_SLAVE_CLASS_CDC_ACM                  *cdc_acm;
+
 UX_SLAVE_CLASS_CDC_ACM_PARAMETER        *cdc_acm_parameter;
 UX_SLAVE_CLASS                          *class_ptr;
+UX_SLAVE_CLASS_CDC_ACM                  *cdc_acm;
+
 #if !defined(UX_DEVICE_STANDALONE)
 UINT                                    status;
 #endif
@@ -306,7 +315,7 @@ UINT                                    status;
 
 #endif
 #endif
-
+    my_cdc_acm=cdc_acm;
     /* Return completion status.  */
     return(UX_SUCCESS);
 }

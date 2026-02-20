@@ -27,12 +27,14 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+#define UX_DCD_STM32_FS   0
+#define UX_DCD_STM32_HS   1
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/

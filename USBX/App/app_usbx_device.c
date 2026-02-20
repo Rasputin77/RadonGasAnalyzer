@@ -23,12 +23,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "ux_dcd_stm32.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -49,17 +49,12 @@ static UX_SLAVE_CLASS_CDC_ACM_PARAMETER cdc_acm_parameter;
 static TX_THREAD ux_device_app_thread;
 
 /* USER CODE BEGIN PV */
-UX_SLAVE_CLASS_CDC_ACM *cdc_acm;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 static VOID app_ux_device_thread_entry(ULONG thread_input);
 /* USER CODE BEGIN PFP */
-
-VOID cdc_acm_activate(VOID *cdc_instance);
-
-
-VOID cdc_acm_deactivate(VOID *cdc_instance);
 
 /* USER CODE END PFP */
 
@@ -182,8 +177,11 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   }
 
   /* USER CODE BEGIN MX_USBX_Device_Init1 */
+   //ux_dcd_stm32_initialize((ULONG)USB_OTG_FS, &hpcd_USB_OTG_FS);
+   if (ux_dcd_stm32_initialize((ULONG)USB_OTG_FS, (ULONG)&hpcd_USB_OTG_FS) != UX_SUCCESS)
+   	   { return UX_ERROR; }
 
-  /* USER CODE END MX_USBX_Device_Init1 */
+   /* USER CODE END MX_USBX_Device_Init1 */
 
   return ret;
 }
@@ -201,15 +199,5 @@ static VOID app_ux_device_thread_entry(ULONG thread_input)
 }
 
 /* USER CODE BEGIN 1 */
-
-VOID cdc_acm_activate(VOID *cdc_instance)
-{
-    cdc_acm = (UX_SLAVE_CLASS_CDC_ACM *)cdc_instance;
-}
-
-VOID cdc_acm_deactivate(VOID *cdc_instance)
-{
-    cdc_acm = UX_NULL;
-}
 
 /* USER CODE END 1 */

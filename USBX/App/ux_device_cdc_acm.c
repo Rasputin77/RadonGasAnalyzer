@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+//#include "ux_device_class_cdc_acm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,7 +48,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+//UX_SLAVE_CLASS_CDC_ACM                  *cdc_acm_val=NULL;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -65,7 +65,9 @@
 VOID USBD_CDC_ACM_Activate(VOID *cdc_acm_instance)
 {
   /* USER CODE BEGIN USBD_CDC_ACM_Activate */
+//	cdc_acm_val=(UX_SLAVE_CLASS_CDC_ACM *)cdc_acm_instance;
   UX_PARAMETER_NOT_USED(cdc_acm_instance);
+
   /* USER CODE END USBD_CDC_ACM_Activate */
 
   return;
@@ -81,6 +83,8 @@ VOID USBD_CDC_ACM_Deactivate(VOID *cdc_acm_instance)
 {
   /* USER CODE BEGIN USBD_CDC_ACM_Deactivate */
   UX_PARAMETER_NOT_USED(cdc_acm_instance);
+  
+  //cdc_acm_val=NULL;
   /* USER CODE END USBD_CDC_ACM_Deactivate */
 
   return;
