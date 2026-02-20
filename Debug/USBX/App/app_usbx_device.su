@@ -1,0 +1,4 @@
+../USBX/App/app_usbx_device.c:72:6:MX_USBX_Device_Init	104	static
+../USBX/App/app_usbx_device.c:196:13:app_ux_device_thread_entry	16	static
+../USBX/App/app_usbx_device.c:205:6:cdc_acm_activate	16	static
+../USBX/App/app_usbx_device.c:210:6:cdc_acm_deactivate	16	static
