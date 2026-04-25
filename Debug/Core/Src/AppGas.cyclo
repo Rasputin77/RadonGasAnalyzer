@@ -1,0 +1,13 @@
+../Core/Src/AppGas.c:93:13:detect_sensor	3
+../Core/Src/AppGas.c:112:19:sensor_measure	12
+../Core/Src/AppGas.c:194:19:hdc1080_get_device_id	6
+../Core/Src/AppGas.c:238:19:i2c_write	1
+../Core/Src/AppGas.c:243:19:i2c_read	1
+../Core/Src/AppGas.c:255:5:CCS811_Init	3
+../Core/Src/AppGas.c:285:15:CCS811_Read	3
+../Core/Src/AppGas.c:310:6:BMP280_ReadRaw	1
+../Core/Src/AppGas.c:321:26:BMP280_ReadReg	1
+../Core/Src/AppGas.c:327:26:BMP280_WriteReg	1
+../Core/Src/AppGas.c:334:19:BMP280_Init	2
+../Core/Src/AppGas.c:370:19:BMP280_ReadTemperaturePressure	3
+../Core/Src/AppGas.c:424:6:AppMain	3

@@ -1,0 +1,2 @@
+../Core/Src/sht40.c:12:16:SHT40_CRC	4
+../Core/Src/sht40.c:27:19:SHT40_Read	5

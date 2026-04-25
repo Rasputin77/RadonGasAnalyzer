@@ -48,10 +48,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 TX_THREAD tx_app_thread;
-extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+
 
 /* USER CODE BEGIN PV */
-
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -102,36 +102,8 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
 void tx_app_thread_entry(ULONG thread_input)
 {
   /* USER CODE BEGIN tx_app_thread_entry */
-	UCHAR msg[] = "Hallo!!\r\n";
-	ULONG actual_length=0;
-	unsigned int ret;
-	//int debug=0;
 	HAL_PCD_Start(&hpcd_USB_OTG_FS);
-	UX_SLAVE_CLASS_CDC_ACM * cdc_acm_val=NULL;
-	//HAL_Delay(4000);
-
-	while(1)
-	{
-		cdc_acm_val=get_cdc_acm();
-
-		if(cdc_acm_val==NULL)
-		{
-
-		}
-		else
-		{
-
-			if (cdc_acm_val->ux_slave_class_cdc_acm_data_dtr_state == 1)
-			{
-				ret=ux_device_class_cdc_acm_write(cdc_acm_val, msg, sizeof(msg) - 1, &actual_length);
-				tx_thread_sleep(100 );
-			}
-
-		}
-
-		//debug++;
-	}
-
+	AppMain();
   /* USER CODE END tx_app_thread_entry */
 }
 
